@@ -1,0 +1,88 @@
+{
+    "name": "jubeki/dynamic-forms-plugin-for-filament",
+    "description": "Create dynamic forms which can be used in your Filament applications.",
+    "keywords": [
+        "laravel",
+        "filamentphp",
+        "forms",
+        "dynamic",
+        "builder"
+    ],
+    "homepage": "https://github.com/Jubeki/dynamic-forms-plugin-for-filament",
+    "support": {
+        "issues": "https://github.com/Jubeki/dynamic-forms-plugin-for-filament/issues",
+        "source": "https://github.com/Jubeki/dynamic-forms-plugin-for-filament"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Julius Kiekbusch",
+            "email": "contact@julius-kiekbusch.de",
+            "role": "Developer"
+        }
+    ],
+    "repositories": {
+        "awcodes/mason": {
+            "type": "vcs",
+            "url": "https://github.com/awcodes/mason"
+        }
+    },
+    "require": {
+        "php": "^8.3",
+        "awcodes/mason": "dev-main",
+        "filament/filament": "^3.2.139",
+        "spatie/laravel-package-tools": "^1.15.0",
+        "spatie/laravel-translatable": "^6.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^2.0",
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^8.0",
+        "orchestra/testbench": "^9.0",
+        "pestphp/pest": "^2.1",
+        "pestphp/pest-plugin-arch": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jubeki\\Filament\\DynamicForms\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jubeki\\Filament\\DynamicForms\\Tests\\": "tests/src",
+            "Jubeki\\Filament\\DynamicForms\\Tests\\Database\\Factories\\": "tests/database/factories/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
+        "lint": "pint",
+        "test:lint": "pint --test",
+        "test:types": "phpstan analyse",
+        "test:unit": "pest",
+        "test": [
+            "@test:lint",
+            "@test:types",
+            "@test:unit"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jubeki\\Filament\\DynamicForms\\DynamicFormsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
