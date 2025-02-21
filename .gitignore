@@ -1,0 +1,8 @@
+laravel
+vendor
+node_modules
+composer.lock
+.php_cs.cache
+.php-cs-fixer.cache
+.phpunit.result.cache
+RELEASE-TEMPLATE.md

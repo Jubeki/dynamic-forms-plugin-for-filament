@@ -1,0 +1,18 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "purge": "filament-purge -i resources/dist/plugin.css -o resources/dist/plugin.css -v 3.x",
+        "dev": "npx tailwindcss -i resources/css/plugin.css -o resources/dist/plugin.css --postcss --watch",
+        "build": "npx tailwindcss -i resources/css/plugin.css -o resources/dist/plugin.css --postcss --minify && npm run purge"
+    },
+    "devDependencies": {
+        "@awcodes/filament-plugin-purge": "^1.1.2",
+        "@tailwindcss/forms": "^0.5.10",
+        "autoprefixer": "^10.4.20",
+        "postcss": "^8.5.3",
+        "postcss-import": "^16.1.0",
+        "tailwindcss": "^3.4.17",
+        "@tailwindcss/typography": "^0.5.16"
+    }
+}

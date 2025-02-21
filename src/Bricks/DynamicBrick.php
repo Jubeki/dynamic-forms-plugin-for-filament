@@ -17,13 +17,18 @@ use LogicException;
 
 abstract class DynamicBrick
 {
+    public static array $bricks = [
+        TextInputBrick::class,
+        RadioBrick::class,
+    ];
+
     public static string $identifier;
 
     public static function brick(): Brick
     {
         return Brick::make(static::$identifier)
             ->slideOver()
-            ->form(static::schema())
+            ->form(method_exists(static::class, 'schema') ? static::schema() : static::defaultSchema())
             ->action(function (array $arguments, array $data, Mason $component) {
 
                 $data['type'] = static::$identifier;
@@ -47,10 +52,13 @@ abstract class DynamicBrick
 
     public static function resolve(string $type, array $data): static
     {
-        return match ($type) {
-            TextInputBrick::$identifier => TextInputBrick::build($data),
-            default => throw new LogicException('Unknown dynamic brick type.'),
-        };
+        foreach(static::$bricks as $brick) {
+            if($brick::$identifier === $type) {
+                return $brick::build($data);
+            }
+        }
+        
+        throw new LogicException('Unknown dynamic brick type.');
     }
 
     public static function build(array $data): static
@@ -58,7 +66,7 @@ abstract class DynamicBrick
         return new static($data);
     }
 
-    public static function schema(array $schema = []): array
+    public static function defaultSchema(array $schema = []): array
     {
         return [
             TextInput::make('handle')
@@ -152,6 +160,22 @@ abstract class DynamicBrick
     }
 
     protected function string(string $key): ?string
+    {
+        return Arr::get($this->data, $key);
+    }
+
+    protected function localizedArray(string $key): ?array
+    {
+        $array = Arr::get($this->data, $key);
+
+        if($array === null) {
+            return null;
+        }
+
+        return Arr::map($array, fn($value) => $value[App::getLocale()]);
+    }
+
+    protected function array(string $key): ?array
     {
         return Arr::get($this->data, $key);
     }

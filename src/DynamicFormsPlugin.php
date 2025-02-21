@@ -4,6 +4,7 @@ namespace Jubeki\Filament\DynamicForms;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Filament\Support\Assets\Css;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource;
 use Jubeki\Filament\DynamicForms\Resources\FormPageResource;
 
@@ -25,6 +26,9 @@ class DynamicFormsPlugin implements Plugin
             ->resources([
                 FormBlueprintResource::class,
                 FormPageResource::class,
+            ])
+            ->assets([
+                Css::make('dynamic-forms', __DIR__ . '/../resources/dist/plugin.css'),
             ]);
     }
  

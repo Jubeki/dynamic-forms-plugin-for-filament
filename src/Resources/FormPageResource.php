@@ -12,6 +12,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Arr;
+use Jubeki\Filament\DynamicForms\Bricks\DynamicBrick;
 use Jubeki\Filament\DynamicForms\Bricks\TextInputBrick;
 use Jubeki\Filament\DynamicForms\Models\FormBlueprint;
 use Jubeki\Filament\DynamicForms\Models\FormPage;
@@ -52,9 +54,9 @@ class FormPageResource extends Resource
                 ])->columns(2),
 
                 Mason::make('fields')
-                    ->bricks([
-                        TextInputBrick::make(),
-                    ]),
+                    ->bricks(
+                        Arr::map(DynamicBrick::$bricks, fn ($brick) => $brick::make())
+                    ),
 
             ]);
     }
