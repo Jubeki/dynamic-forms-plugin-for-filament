@@ -60,17 +60,17 @@ abstract class DynamicBrick
 
     public static function resolve(string $type, array $data, array $dependencies): static
     {
-        foreach(static::$bricks as $brick) {
-            if($brick::$identifier === $type) {
+        foreach (static::$bricks as $brick) {
+            if ($brick::$identifier === $type) {
                 return $brick::build($data, $dependencies);
             }
         }
-        
+
         throw new LogicException('Unknown dynamic brick type.');
     }
 
     /**
-     * @param list<string> $dependencies
+     * @param  list<string>  $dependencies
      */
     public static function build(array $data, array $dependencies): static
     {
@@ -98,7 +98,7 @@ abstract class DynamicBrick
                         TextInput::make('label.en')
                             ->label('Label (EN)')
                             ->required(),
-                        
+
                     ])->columns(2),
 
                     Group::make([
@@ -108,7 +108,7 @@ abstract class DynamicBrick
 
                         TextInput::make('helperText.en')
                             ->label('Helper Text (EN)'),
-                        
+
                     ])->columns(2),
 
                     Group::make([
@@ -118,7 +118,7 @@ abstract class DynamicBrick
 
                         TextInput::make('hint.en')
                             ->label('Hint (EN)'),
-                        
+
                     ])->columns(2),
 
                     ...$schema,
@@ -134,7 +134,7 @@ abstract class DynamicBrick
                             TextInput::make('rule')
                                 ->label('Rule')
                                 ->required()
-                        )
+                        ),
                 ]),
 
                 Tab::make('Visibility')->schema([
@@ -151,7 +151,7 @@ abstract class DynamicBrick
                         ->live(),
 
                     TableRepeater::make('visible_conditions')
-                        ->visible(fn(Get $get) => in_array($get('visible'), ['if_all', 'if_any']))
+                        ->visible(fn (Get $get) => in_array($get('visible'), ['if_all', 'if_any']))
                         ->headers([
                             Header::make('Field'),
                             Header::make('Operator'),
@@ -195,13 +195,14 @@ abstract class DynamicBrick
         protected array $dependencies
     ) {}
 
-    public abstract function form(): FormComponent;
-    public abstract function infolist(): InfolistComponent;
+    abstract public function form(): FormComponent;
+
+    abstract public function infolist(): InfolistComponent;
 
     /**
      * @template T of \Filament\Forms\Components\Component
-     * 
-     * @param  class-string<T>  $class 
+     *
+     * @param  class-string<T>  $class
      * @return T
      */
     protected function configureForForm(string $class): FormComponent
@@ -217,8 +218,8 @@ abstract class DynamicBrick
 
     /**
      * @template T of \Filament\Infolists\Components\Component
-     * 
-     * @param  class-string<T>  $class 
+     *
+     * @param  class-string<T>  $class
      * @return T
      */
     protected function configureForInfolist(string $class): InfolistComponent
@@ -230,19 +231,19 @@ abstract class DynamicBrick
 
     protected function visibleClosure(): Closure|bool
     {
-        if($this->data['visible'] === 'always') {
+        if ($this->data['visible'] === 'always') {
             return true;
         }
 
-        if($this->data['visible'] === 'never') {
+        if ($this->data['visible'] === 'never') {
             return false;
         }
 
-        if($this->data['visible'] === 'if_all') {
-            return function(Get $get) {
+        if ($this->data['visible'] === 'if_all') {
+            return function (Get $get) {
 
-                foreach($this->data['visible_conditions'] as $condition) {
-                    if($this->evaluateCondition($condition, $get) === false) {
+                foreach ($this->data['visible_conditions'] as $condition) {
+                    if ($this->evaluateCondition($condition, $get) === false) {
                         return false;
                     }
                 }
@@ -252,15 +253,15 @@ abstract class DynamicBrick
             };
         }
 
-        if($this->data['visible'] === 'if_any') {
-            return function(Get $get) {
-                
-                foreach($this->data['visible_conditions'] as $condition) {
-                    if($this->evaluateCondition($condition, $get) === true) {
+        if ($this->data['visible'] === 'if_any') {
+            return function (Get $get) {
+
+                foreach ($this->data['visible_conditions'] as $condition) {
+                    if ($this->evaluateCondition($condition, $get) === true) {
                         return true;
                     }
                 }
-    
+
                 return false;
             };
         }
@@ -276,7 +277,7 @@ abstract class DynamicBrick
 
         $fieldValue = $get($field);
 
-        return match($operator) {
+        return match ($operator) {
             '==' => $fieldValue == $value,
             '!=' => $fieldValue != $value,
             '>' => $fieldValue > $value,
@@ -287,7 +288,7 @@ abstract class DynamicBrick
             'starts_with' => str_starts_with($fieldValue, $value),
             'ends_with' => str_ends_with($fieldValue, $value),
             'in' => in_array($fieldValue, explode(',', $value)),
-            'not_in' => !in_array($fieldValue, explode(',', $value)),
+            'not_in' => ! in_array($fieldValue, explode(',', $value)),
             default => false,
         };
     }
@@ -306,11 +307,11 @@ abstract class DynamicBrick
     {
         $array = Arr::get($this->data, $key);
 
-        if($array === null) {
+        if ($array === null) {
             return null;
         }
 
-        return Arr::map($array, fn($value) => $value[App::getLocale()]);
+        return Arr::map($array, fn ($value) => $value[App::getLocale()]);
     }
 
     protected function array(string $key): ?array

@@ -2,7 +2,6 @@
 
 namespace Jubeki\Filament\DynamicForms\Resources;
 
-use Awcodes\Mason\Mason;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -30,7 +29,7 @@ class FormBlueprintResource extends Resource
                     TextInput::make('handle')
                         ->label('Handle')
                         ->required(),
-    
+
                     TextInput::make('version')
                         ->label('Version')
                         ->required(),
@@ -38,7 +37,7 @@ class FormBlueprintResource extends Resource
                 ])->columns(2),
 
                 Group::make([
-                
+
                     TextInput::make('name.de')
                         ->label('Name (DE)')
                         ->required(),

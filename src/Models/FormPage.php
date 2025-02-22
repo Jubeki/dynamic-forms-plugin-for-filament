@@ -41,7 +41,7 @@ class FormPage extends Model
     }
 
     /**
-     * @param list<string> $dependencies
+     * @param  list<string>  $dependencies
      */
     public function form(array $dependencies): Step
     {
@@ -56,13 +56,13 @@ class FormPage extends Model
     }
 
     /**
-     * @param list<string> $dependencies
+     * @param  list<string>  $dependencies
      */
     public function formSchema(array $dependencies): array
     {
         return Arr::map(
             $this->fields['content'],
-            fn($content) => DynamicBrick::resolve(
+            fn ($content) => DynamicBrick::resolve(
                 $content['attrs']['identifier'],
                 $content['attrs']['values'],
                 $dependencies,
@@ -74,7 +74,7 @@ class FormPage extends Model
     {
         return Arr::map(
             $this->fields['content'],
-            fn($content) => DynamicBrick::resolve(
+            fn ($content) => DynamicBrick::resolve(
                 $content['attrs']['identifier'],
                 $content['attrs']['values'],
             )->infolist(),
@@ -85,7 +85,7 @@ class FormPage extends Model
     {
         return Arr::map(
             $this->fields['content'],
-            fn($content) => Arr::pluck($content['attrs']['values']['visible_conditions'] ?? [], 'field'),
+            fn ($content) => Arr::pluck($content['attrs']['values']['visible_conditions'] ?? [], 'field'),
         );
     }
 }

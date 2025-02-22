@@ -3,8 +3,6 @@
 namespace Jubeki\Filament\DynamicForms\Bricks;
 
 use Awcodes\Mason\Brick;
-use Awcodes\Mason\EditorCommand;
-use Awcodes\Mason\Mason;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use Filament\Forms\Components\Radio;
@@ -47,7 +45,7 @@ class RadioBrick extends DynamicBrick
             ->options(
                 Arr::mapWithKeys(
                     $this->array('options') ?? [],
-                    fn($option) => [$option['value'] => $option['label'][App::getLocale()]]
+                    fn ($option) => [$option['value'] => $option['label'][App::getLocale()]]
                 ),
             );
     }

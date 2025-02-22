@@ -2,9 +2,7 @@
 
 namespace Jubeki\Filament\DynamicForms\Resources;
 
-use Awcodes\Mason\Brick;
 use Awcodes\Mason\Mason;
-use Awcodes\Mason\Tiptap\Nodes\MasonBrick;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -14,16 +12,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Arr;
 use Jubeki\Filament\DynamicForms\Bricks\DynamicBrick;
-use Jubeki\Filament\DynamicForms\Bricks\TextInputBrick;
-use Jubeki\Filament\DynamicForms\Models\FormBlueprint;
 use Jubeki\Filament\DynamicForms\Models\FormPage;
-use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\CreateFormBlueprint;
 use Jubeki\Filament\DynamicForms\Resources\FormPageResource\Pages\CreateFormPage;
-use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\EditFormBlueprint;
 use Jubeki\Filament\DynamicForms\Resources\FormPageResource\Pages\EditFormPage;
-use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\ListFormBlueprints;
 use Jubeki\Filament\DynamicForms\Resources\FormPageResource\Pages\ListFormPages;
-use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\RelationManagers\FormPagesRelationManager;
 
 class FormPageResource extends Resource
 {
@@ -42,7 +34,7 @@ class FormPageResource extends Resource
                     ->required(),
 
                 Group::make([
-                
+
                     TextInput::make('name.de')
                         ->label('Name (DE)')
                         ->required(),

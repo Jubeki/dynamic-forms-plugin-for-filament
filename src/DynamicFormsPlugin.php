@@ -9,7 +9,7 @@ use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource;
 use Jubeki\Filament\DynamicForms\Resources\FormPageResource;
 
 class DynamicFormsPlugin implements Plugin
-{    
+{
     public static function make(): static
     {
         return app(static::class);
@@ -19,7 +19,7 @@ class DynamicFormsPlugin implements Plugin
     {
         return 'dynamic-forms';
     }
- 
+
     public function register(Panel $panel): void
     {
         $panel
@@ -28,10 +28,10 @@ class DynamicFormsPlugin implements Plugin
                 FormPageResource::class,
             ])
             ->assets([
-                Css::make('dynamic-forms', __DIR__ . '/../resources/dist/plugin.css'),
+                Css::make('dynamic-forms', __DIR__.'/../resources/dist/plugin.css'),
             ]);
     }
- 
+
     public function boot(Panel $panel): void
     {
         //
