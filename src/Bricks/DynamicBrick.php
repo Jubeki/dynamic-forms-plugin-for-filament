@@ -5,11 +5,18 @@ namespace Jubeki\Filament\DynamicForms\Bricks;
 use Awcodes\Mason\Brick;
 use Awcodes\Mason\EditorCommand;
 use Awcodes\Mason\Mason;
+use Awcodes\TableRepeater\Components\TableRepeater;
+use Awcodes\TableRepeater\Header;
 use Closure;
 use Filament\Forms\Components\Component as FormComponent;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\Component as InfolistComponent;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
@@ -29,6 +36,7 @@ abstract class DynamicBrick
         return Brick::make(static::$identifier)
             ->slideOver()
             ->form(method_exists(static::class, 'schema') ? static::schema() : static::defaultSchema())
+            ->fillForm(fn (array $arguments): array => $arguments)
             ->action(function (array $arguments, array $data, Mason $component) {
 
                 $data['type'] = static::$identifier;
@@ -69,47 +77,113 @@ abstract class DynamicBrick
     public static function defaultSchema(array $schema = []): array
     {
         return [
-            TextInput::make('handle')
-                ->label('Handle')
-                ->required(),
 
-            Group::make([
+            Tabs::make()->contained(false)->schema([
 
-                TextInput::make('label.de')
-                    ->label('Label (DE)')
-                    ->required(),
+                Tab::make('General')->schema([
 
-                TextInput::make('label.en')
-                    ->label('Label (EN)')
-                    ->required(),
-                
-            ])->columns(2),
+                    TextInput::make('handle')
+                        ->label('Handle')
+                        ->required(),
 
-            Group::make([
+                    Group::make([
 
-                TextInput::make('helperText.de')
-                    ->label('Helper Text (DE)'),
+                        TextInput::make('label.de')
+                            ->label('Label (DE)')
+                            ->required(),
 
-                TextInput::make('helperText.en')
-                    ->label('Helper Text (EN)'),
-                
-            ])->columns(2),
+                        TextInput::make('label.en')
+                            ->label('Label (EN)')
+                            ->required(),
+                        
+                    ])->columns(2),
 
-            Group::make([
+                    Group::make([
 
-                TextInput::make('hint.de')
-                    ->label('Hint (DE)'),
+                        TextInput::make('helperText.de')
+                            ->label('Helper Text (DE)'),
 
-                TextInput::make('hint.en')
-                    ->label('Hint (EN)'),
-                
-            ])->columns(2),
+                        TextInput::make('helperText.en')
+                            ->label('Helper Text (EN)'),
+                        
+                    ])->columns(2),
 
-            Toggle::make('required')
-                ->label('Required'),
-            
+                    Group::make([
 
-            ...$schema,
+                        TextInput::make('hint.de')
+                            ->label('Hint (DE)'),
+
+                        TextInput::make('hint.en')
+                            ->label('Hint (EN)'),
+                        
+                    ])->columns(2),
+
+                    ...$schema,
+                ]),
+
+                Tab::make('Validation')->schema([
+
+                    Toggle::make('required')
+                        ->label('Required'),
+
+                    Repeater::make('rules')
+                        ->simple(
+                            TextInput::make('rule')
+                                ->label('Rule')
+                                ->required()
+                        )
+                ]),
+
+                Tab::make('Visibility')->schema([
+
+                    Select::make('visible')
+                        ->label('Visible')
+                        ->options([
+                            'always' => 'Always',
+                            'if_all' => 'If all conditions are true',
+                            'if_any' => 'If any condition is true',
+                            'never' => 'Never',
+                        ])
+                        ->default('always')
+                        ->live(),
+
+                    TableRepeater::make('visible_conditions')
+                        ->visible(fn(Get $get) => in_array($get('visible'), ['if_all', 'if_any']))
+                        ->headers([
+                            Header::make('Field'),
+                            Header::make('Operator'),
+                            Header::make('Value'),
+                        ])
+                        ->schema([
+                            TextInput::make('field')
+                                ->label('Field')
+                                ->required(),
+
+                            Select::make('operator')
+                                ->label('Operator')
+                                ->options([
+                                    '==' => '==',
+                                    '!=' => '!=',
+                                    '>' => '>',
+                                    '<' => '<',
+                                    '>=' => '>=',
+                                    '<=' => '<=',
+                                    'contains' => 'contains',
+                                    'starts_with' => 'starts with',
+                                    'ends_with' => 'ends with',
+                                    'in' => 'in',
+                                    'not_in' => 'not in',
+                                ])
+                                ->required(),
+
+                            TextInput::make('value')
+                                ->label('Value')
+                                ->required(),
+                        ])->defaultItems(1),
+
+                ]),
+            ]),
+
         ];
     }
 
@@ -131,7 +205,8 @@ abstract class DynamicBrick
             ->helperText($this->localized('helperText'))
             ->hint($this->localized('hint'))
             ->required($this->bool('required'))
-            ->visible($this->visibleClosure());
+            ->visible($this->visibleClosure())
+            ->live(); // TODO: not every field should be live.
     }
 
     /**
@@ -147,10 +222,67 @@ abstract class DynamicBrick
             ->visible($this->visibleClosure());
     }
 
-    protected function visibleClosure(): Closure
+    protected function visibleClosure(): Closure|bool
     {
-        return function() {
+        if($this->data['visible'] === 'always') {
             return true;
+        }
+
+        if($this->data['visible'] === 'never') {
+            return false;
+        }
+
+        if($this->data['visible'] === 'if_all') {
+            return function(Get $get) {
+
+                foreach($this->data['visible_conditions'] as $condition) {
+                    if($this->evaluateCondition($condition, $get) === false) {
+                        return false;
+                    }
+                }
+
+                return true;
+
+            };
+        }
+
+        if($this->data['visible'] === 'if_any') {
+            return function(Get $get) {
+                
+                foreach($this->data['visible_conditions'] as $condition) {
+                    if($this->evaluateCondition($condition, $get) === true) {
+                        return true;
+                    }
+                }
+    
+                return false;
+            };
+        }
+
+        return true;
+    }
+
+    protected function evaluateCondition(array $condition, Get $get): bool
+    {
+        $field = $condition['field'];
+        $operator = $condition['operator'];
+        $value = $condition['value'];
+
+        $fieldValue = $get($field);
+
+        return match($operator) {
+            '==' => $fieldValue == $value,
+            '!=' => $fieldValue != $value,
+            '>' => $fieldValue > $value,
+            '<' => $fieldValue < $value,
+            '>=' => $fieldValue >= $value,
+            '<=' => $fieldValue <= $value,
+            'contains' => str_contains($fieldValue, $value),
+            'starts_with' => str_starts_with($fieldValue, $value),
+            'ends_with' => str_ends_with($fieldValue, $value),
+            'in' => in_array($fieldValue, explode(',', $value)),
+            'not_in' => !in_array($fieldValue, explode(',', $value)),
+            default => false,
         };
     }
 
