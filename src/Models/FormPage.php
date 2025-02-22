@@ -40,9 +40,14 @@ class FormPage extends Model
         return $this->belongsTo(FormBlueprint::class, 'form_blueprint_id');
     }
 
-    public function form(): Step
+    /**
+     * @param list<string> $dependencies
+     */
+    public function form(array $dependencies): Step
     {
-        return Step::make($this->name)->schema($this->formSchema());
+        $dependencies ??= $this->fieldsDependedOn();
+
+        return Step::make($this->name)->schema($this->formSchema($dependencies));
     }
 
     public function infolist(): Tab
@@ -50,13 +55,17 @@ class FormPage extends Model
         return Tab::make($this->name)->schema($this->infolistSchema());
     }
 
-    public function formSchema(): array
+    /**
+     * @param list<string> $dependencies
+     */
+    public function formSchema(array $dependencies): array
     {
         return Arr::map(
             $this->fields['content'],
             fn($content) => DynamicBrick::resolve(
                 $content['attrs']['identifier'],
                 $content['attrs']['values'],
+                $dependencies,
             )->form(),
         );
     }
@@ -69,6 +78,14 @@ class FormPage extends Model
                 $content['attrs']['identifier'],
                 $content['attrs']['values'],
             )->infolist(),
+        );
+    }
+
+    public function fieldsDependedOn(): array
+    {
+        return Arr::map(
+            $this->fields['content'],
+            fn($content) => Arr::pluck($content['attrs']['values']['visible_conditions'] ?? [], 'field'),
         );
     }
 }

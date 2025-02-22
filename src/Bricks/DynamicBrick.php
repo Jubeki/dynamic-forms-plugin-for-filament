@@ -58,20 +58,23 @@ abstract class DynamicBrick
             });
     }
 
-    public static function resolve(string $type, array $data): static
+    public static function resolve(string $type, array $data, array $dependencies): static
     {
         foreach(static::$bricks as $brick) {
             if($brick::$identifier === $type) {
-                return $brick::build($data);
+                return $brick::build($data, $dependencies);
             }
         }
         
         throw new LogicException('Unknown dynamic brick type.');
     }
 
-    public static function build(array $data): static
+    /**
+     * @param list<string> $dependencies
+     */
+    public static function build(array $data, array $dependencies): static
     {
-        return new static($data);
+        return new static($data, $dependencies);
     }
 
     public static function defaultSchema(array $schema = []): array
@@ -187,7 +190,10 @@ abstract class DynamicBrick
         ];
     }
 
-    protected function __construct(protected array $data) {}
+    protected function __construct(
+        protected array $data,
+        protected array $dependencies
+    ) {}
 
     public abstract function form(): FormComponent;
     public abstract function infolist(): InfolistComponent;
@@ -206,7 +212,7 @@ abstract class DynamicBrick
             ->hint($this->localized('hint'))
             ->required($this->bool('required'))
             ->visible($this->visibleClosure())
-            ->live(); // TODO: not every field should be live.
+            ->live(condition: in_array($this->data['handle'], $this->dependencies));
     }
 
     /**

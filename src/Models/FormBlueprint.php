@@ -28,11 +28,18 @@ class FormBlueprint extends Model
 
     public function form(): Wizard
     {
-        return Wizard::make($this->pages->map->form()->all());
+        $dependencies = $this->fieldsDependedOn();
+
+        return Wizard::make($this->pages->map->form($dependencies)->all());
     }
 
     public function infolist(): Tabs
     {
         return Tabs::make($this->pages->map->infolist()->all());
+    }
+
+    public function fieldsDependedOn(): array
+    {
+        return $this->pages->map->fieldsDependedOn()->flatten()->unique()->values()->all();
     }
 }
