@@ -24,7 +24,9 @@ class FormPagesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make()->url(FormPageResource::getUrl('create')),
+                CreateAction::make()->url(FormPageResource::getUrl('create', [
+                    'blueprint' => $this->getOwnerRecord()->getKey(),
+                ])),
             ])
             ->actions([
                 //

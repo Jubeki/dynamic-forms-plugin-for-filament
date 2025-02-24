@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Request;
 use Jubeki\Filament\DynamicForms\Bricks\DynamicBrick;
 use Jubeki\Filament\DynamicForms\Models\FormPage;
 use Jubeki\Filament\DynamicForms\Resources\FormPageResource\Pages\CreateFormPage;
@@ -31,7 +32,10 @@ class FormPageResource extends Resource
                     ->label('Form Blueprint')
                     ->relationship('blueprint', 'name')
                     ->preload()
-                    ->required(),
+                    ->required()
+                    ->default(function() {
+                        return Request::query('blueprint');
+                    }),
 
                 Group::make([
 
