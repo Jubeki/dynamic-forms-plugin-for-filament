@@ -30,6 +30,7 @@ abstract class DynamicBrick
         SelectBrick::class,
         CheckboxBrick::class,
         ToggleBrick::class,
+        CustomFieldSetBrick::class,
     ];
 
     public static string $identifier;
@@ -61,7 +62,7 @@ abstract class DynamicBrick
             });
     }
 
-    public static function resolve(string $type, array $data, array $dependencies): static
+    public static function resolve(string $type, array $data, ?array $dependencies = null): static
     {
         foreach (static::$bricks as $brick) {
             if ($brick::$identifier === $type) {
@@ -75,9 +76,9 @@ abstract class DynamicBrick
     /**
      * @param  list<string>  $dependencies
      */
-    public static function build(array $data, array $dependencies): static
+    public static function build(array $data, ?array $dependencies = null): static
     {
-        return new static($data, $dependencies);
+        return new static($data, $dependencies ?? []);
     }
 
     public static function defaultSchema(array $schema = []): array
@@ -195,12 +196,12 @@ abstract class DynamicBrick
 
     protected function __construct(
         protected array $data,
-        protected array $dependencies
+        protected array $dependencies = [],
     ) {}
 
-    abstract public function form(): FormComponent;
+    abstract public function form(): FormComponent|array;
 
-    abstract public function infolist(): InfolistComponent;
+    abstract public function infolist(): InfolistComponent|array;
 
     /**
      * @template T of \Filament\Forms\Components\Component

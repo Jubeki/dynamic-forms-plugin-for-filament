@@ -9,8 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 use Jubeki\Filament\DynamicForms\Bricks\DynamicBrick;
 use Spatie\Translatable\HasTranslations;
+use Filament\Forms\Components\Group as FormGroup;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\Group as InfolistGroup;
 
-class FormPage extends Model
+class CustomFieldSet extends Model
 {
     use HasTranslations;
 
@@ -21,7 +25,7 @@ class FormPage extends Model
      *
      * @var string|null
      */
-    protected $table = 'dynamic_form_pages';
+    protected $table = 'dynamic_custom_field_sets';
 
     /**
      * Get the attributes that should be cast.
@@ -35,31 +39,13 @@ class FormPage extends Model
         ];
     }
 
-    public function blueprint(): BelongsTo
-    {
-        return $this->belongsTo(FormBlueprint::class, 'form_blueprint_id');
-    }
-
     /**
      * @param  list<string>  $dependencies
      */
-    public function form(?array $dependencies = null): Step
+    public function form(?array $dependencies = null): array
     {
         $dependencies ??= $this->fieldsDependedOn();
 
-        return Step::make($this->name)->schema($this->formSchema($dependencies));
-    }
-
-    public function infolist(): Tab
-    {
-        return Tab::make($this->name)->schema($this->infolistSchema());
-    }
-
-    /**
-     * @param  list<string>  $dependencies
-     */
-    public function formSchema(array $dependencies): array
-    {
         return collect($this->fields['content'])->map(
             fn ($content) => DynamicBrick::resolve(
                 $content['attrs']['identifier'],
@@ -69,7 +55,7 @@ class FormPage extends Model
         )->flatten()->all();
     }
 
-    public function infolistSchema(): array
+    public function infolist(): array
     {
         return collect($this->fields['content'])->map(
             fn ($content) => DynamicBrick::resolve(

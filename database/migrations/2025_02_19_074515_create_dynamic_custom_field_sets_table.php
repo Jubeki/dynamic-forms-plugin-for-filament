@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dynamic_form_pages', function (Blueprint $table) {
+        Schema::create('dynamic_custom_field_sets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('form_blueprint_id');
             $table->json('name');
             $table->json('fields');
             $table->timestamps();

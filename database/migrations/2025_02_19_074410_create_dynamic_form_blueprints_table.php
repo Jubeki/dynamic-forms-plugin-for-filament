@@ -21,12 +21,4 @@ return new class extends Migration
             $table->unique(['handle', 'version']);
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('form_blueprints');
-    }
 };
