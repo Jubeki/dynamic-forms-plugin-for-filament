@@ -27,9 +27,11 @@ abstract class DynamicBrick
     public static array $bricks = [
         TextInputBrick::class,
         RadioBrick::class,
+        ToggleButtonsBrick::class,
         SelectBrick::class,
         CheckboxBrick::class,
         ToggleBrick::class,
+        ContentBrick::class,
         CustomFieldSetBrick::class,
     ];
 
