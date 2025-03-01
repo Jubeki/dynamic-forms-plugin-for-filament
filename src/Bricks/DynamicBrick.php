@@ -322,8 +322,11 @@ abstract class DynamicBrick
             return null;
         }
 
-        return Arr::map($array, fn ($value) => $value[App::getLocale()]);
+        return Arr::mapWithKeys($array, fn ($value) => [
+            $value['value'] => $value['label'][App::getLocale()]
+        ]);
     }
+
 
     protected function array(string $key): ?array
     {
