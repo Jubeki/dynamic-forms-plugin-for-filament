@@ -237,7 +237,8 @@ abstract class DynamicBrick
     {
         return $class::make($this->data['handle'])
             ->label($this->localized('label'))
-            ->visible($this->visibleClosure());
+            ->visible($this->visibleClosure())
+            ->default('---');
     }
 
     protected function visibleClosure(): Closure|bool
@@ -326,7 +327,6 @@ abstract class DynamicBrick
             $value['value'] => $value['label'][App::getLocale()]
         ]);
     }
-
 
     protected function array(string $key): ?array
     {
