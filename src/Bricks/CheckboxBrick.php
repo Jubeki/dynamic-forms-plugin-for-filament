@@ -18,7 +18,8 @@ class CheckboxBrick extends DynamicBrick
 
     public function form(): Checkbox
     {
-        return $this->configureForForm(Checkbox::class);
+        return $this->configureForForm(Checkbox::class)
+            ->accepted($this->data['required']);
     }
 
     public function infolist(): TextEntry
