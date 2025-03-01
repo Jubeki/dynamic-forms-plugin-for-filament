@@ -130,10 +130,6 @@ abstract class DynamicBrick
 
                     ])->columns(2),
 
-                    Toggle::make('encrypted')
-                        ->label('Store Encrypted')
-                        ->helperText('The values stored in the database will be encrypted. Uploaded Files are always encrypted.'),
-
                     ...$schema,
                 ]),
 
@@ -226,15 +222,7 @@ abstract class DynamicBrick
             ->hint($this->localized('hint'))
             ->required($this->bool('required'))
             ->visible($this->visibleClosure())
-            ->live(condition: in_array($this->data['handle'], $this->dependencies))
-            ->afterStateHydrated($this->data['encrypted'] ? function (TextInput $component, $state) {
-                try {
-                    $component->state(
-                        Crypt::decryptString($state)
-                    );
-                } catch (DecryptException) {}
-            } : null)
-            ->dehydrateStateUsing($this->data['encrypted'] ? fn ($state) => Crypt::encryptString($state) : null);
+            ->live(condition: in_array($this->data['handle'], $this->dependencies));
     }
 
     /**
