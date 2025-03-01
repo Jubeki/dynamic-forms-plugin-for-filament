@@ -4,6 +4,7 @@ namespace Jubeki\Filament\DynamicForms\Bricks;
 
 use Awcodes\Mason\Brick;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 
@@ -19,7 +20,7 @@ class CheckboxBrick extends DynamicBrick
     public function form(): Checkbox
     {
         return $this->configureForForm(Checkbox::class)
-            ->accepted($this->data['required']);
+            ->accepted(fn(Component $component) => $component->isRequired());
     }
 
     public function infolist(): TextEntry

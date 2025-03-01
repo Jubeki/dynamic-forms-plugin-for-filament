@@ -26,16 +26,16 @@ class FormBlueprint extends Model
         return $this->hasMany(FormPage::class);
     }
 
-    public function form(): Wizard
+    public function form(bool $disableRequiredCheck = false): Wizard
     {
         $dependencies = $this->fieldsDependedOn();
 
-        return Wizard::make($this->pages->map->form($dependencies)->all());
+        return Wizard::make($this->pages->map->form($dependencies, $disableRequiredCheck)->all());
     }
 
     public function infolist(): Tabs
     {
-        return Tabs::make($this->pages->map->infolist()->all());
+        return Tabs::make()->schema($this->pages->map->infolist()->all());
     }
 
     public function fieldsDependedOn(): array

@@ -7,6 +7,7 @@ use Filament\Infolists\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
 use Jubeki\Filament\DynamicForms\Bricks\DynamicBrick;
 use Spatie\Translatable\HasTranslations;
 
@@ -43,11 +44,11 @@ class FormPage extends Model
     /**
      * @param  list<string>  $dependencies
      */
-    public function form(?array $dependencies = null): Step
+    public function form(?array $dependencies = null, bool $disableRequiredCheck = false): Step
     {
         $dependencies ??= $this->fieldsDependedOn();
 
-        return Step::make($this->name)->schema($this->formSchema($dependencies));
+        return Step::make($this->name)->schema($this->formSchema($dependencies, $disableRequiredCheck));
     }
 
     public function infolist(): Tab
@@ -58,13 +59,14 @@ class FormPage extends Model
     /**
      * @param  list<string>  $dependencies
      */
-    public function formSchema(array $dependencies): array
+    public function formSchema(array $dependencies, bool $disableRequiredCheck = false): array
     {
         return collect($this->fields['content'])->map(
             fn ($content) => DynamicBrick::resolve(
                 $content['attrs']['identifier'],
                 $content['attrs']['values'],
                 $dependencies,
+                $disableRequiredCheck,
             )->form(),
         )->flatten()->all();
     }

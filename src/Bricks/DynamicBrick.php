@@ -17,6 +17,7 @@ use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
+use Livewire\Component as Livewire;
 use Filament\Infolists\Components\Component as InfolistComponent;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -67,11 +68,11 @@ abstract class DynamicBrick
             });
     }
 
-    public static function resolve(string $type, array $data, ?array $dependencies = null): static
+    public static function resolve(string $type, array $data, ?array $dependencies = null, bool $disableRequiredCheck = false): static
     {
         foreach (static::$bricks as $brick) {
             if ($brick::$identifier === $type) {
-                return $brick::build($data, $dependencies);
+                return $brick::build($data, $dependencies, $disableRequiredCheck);
             }
         }
 
@@ -81,9 +82,9 @@ abstract class DynamicBrick
     /**
      * @param  list<string>  $dependencies
      */
-    public static function build(array $data, ?array $dependencies = null): static
+    public static function build(array $data, ?array $dependencies = null, bool $disableRequiredCheck = false): static
     {
-        return new static($data, $dependencies ?? []);
+        return new static($data, $dependencies ?? [], $disableRequiredCheck);
     }
 
     public static function defaultSchema(array $schema = []): array
@@ -202,6 +203,7 @@ abstract class DynamicBrick
     protected function __construct(
         protected array $data,
         protected array $dependencies = [],
+        protected bool $disableRequiredCheck = false,
     ) {}
 
     abstract public function form(): FormComponent|array;
@@ -220,7 +222,7 @@ abstract class DynamicBrick
             ->label($this->localized('label'))
             ->helperText($this->localized('helperText'))
             ->hint($this->localized('hint'))
-            ->required($this->bool('required'))
+            ->required(fn(Livewire $livewire) => ! ($livewire->disableRequiredCheck ?? false) &&$this->bool('required'))
             ->visible($this->visibleClosure())
             ->live(condition: in_array($this->data['handle'], $this->dependencies));
     }
