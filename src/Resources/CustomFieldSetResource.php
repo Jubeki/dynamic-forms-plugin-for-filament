@@ -26,6 +26,23 @@ class CustomFieldSetResource extends Resource
 {
     public static ?string $model = CustomFieldSet::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
+
+    public static function getModelLabel(): string
+    {
+        return trans('dynamic-forms::resources.custom_field_sets.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('dynamic-forms::resources.custom_field_sets.plural');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('dynamic-forms::resources.custom_field_sets.navigation');
+    }
+
     public static function form(Form $form): Form
     {
         return $form

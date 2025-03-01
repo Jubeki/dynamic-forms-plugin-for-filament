@@ -13,7 +13,7 @@ class DynamicFormsServiceProvider extends PackageServiceProvider
             ->name('dynamic-forms')
             // ->hasConfigFile()
             ->hasViews()
-            // ->hasTranslations()
+            ->hasTranslations()
             ->discoversMigrations();
     }
 }

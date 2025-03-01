@@ -18,6 +18,23 @@ class FormBlueprintResource extends Resource
 {
     public static ?string $model = FormBlueprint::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
+
+    public static function getModelLabel(): string
+    {
+        return trans('dynamic-forms::resources.blueprints.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('dynamic-forms::resources.blueprints.plural');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('dynamic-forms::resources.blueprints.navigation');
+    }
+
     public static function form(Form $form): Form
     {
         return $form

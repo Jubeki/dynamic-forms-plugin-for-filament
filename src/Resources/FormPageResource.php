@@ -22,6 +22,23 @@ class FormPageResource extends Resource
 {
     public static ?string $model = FormPage::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getModelLabel(): string
+    {
+        return trans('dynamic-forms::resources.pages.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('dynamic-forms::resources.pages.plural');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('dynamic-forms::resources.pages.navigation');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
