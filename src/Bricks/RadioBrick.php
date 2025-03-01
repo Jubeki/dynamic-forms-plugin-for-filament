@@ -53,8 +53,8 @@ class RadioBrick extends DynamicBrick
     public function infolist(): TextEntry
     {
         return $this->configureForInfolist(TextEntry::class)
-            ->formatStateUsing(function ($value) {
-                return $this->localizedArray('options')[$value] ?? $value;
+            ->formatStateUsing(function ($state) {
+                return $this->localizedArray('options')[$state] ?? $state;
             });
     }
 }
