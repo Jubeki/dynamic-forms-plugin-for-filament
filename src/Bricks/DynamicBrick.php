@@ -18,8 +18,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
 use Filament\Infolists\Components\Component as InfolistComponent;
+use Filament\Infolists\Components\TextEntry;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Crypt;
 use LogicException;
 
 abstract class DynamicBrick
@@ -223,7 +226,15 @@ abstract class DynamicBrick
             ->hint($this->localized('hint'))
             ->required($this->bool('required'))
             ->visible($this->visibleClosure())
-            ->live(condition: in_array($this->data['handle'], $this->dependencies));
+            ->live(condition: in_array($this->data['handle'], $this->dependencies))
+            ->afterStateHydrated($this->data['encrypted'] ? function (TextInput $component, $state) {
+                try {
+                    $component->state(
+                        Crypt::decryptString($state)
+                    );
+                } catch (DecryptException) {}
+            } : null)
+            ->dehydrateStateUsing($this->data['encrypted'] ? fn ($state) => Crypt::encryptString($state) : null);
     }
 
     /**
