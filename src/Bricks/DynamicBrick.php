@@ -127,6 +127,10 @@ abstract class DynamicBrick
 
                     ])->columns(2),
 
+                    Toggle::make('encrypted')
+                        ->label('Store Encrypted')
+                        ->helperText('The values stored in the database will be encrypted. Uploaded Files are always encrypted.'),
+
                     ...$schema,
                 ]),
 

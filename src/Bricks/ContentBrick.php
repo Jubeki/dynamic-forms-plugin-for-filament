@@ -11,6 +11,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Group as InfolistGroup;
 use Filament\Infolists\Components\TextEntry;
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 use Jubeki\Filament\DynamicForms\Models\CustomFieldSet;
 
 class ContentBrick extends DynamicBrick
@@ -38,11 +40,11 @@ class ContentBrick extends DynamicBrick
                     ->label('Label (EN)'),
             ]),
 
-            Textarea::make('content.de')
+            RichEditor::make('content.de')
                 ->label('Content (DE)')
                 ->required(),
 
-            Textarea::make('content.en')
+            RichEditor::make('content.en')
                 ->label('Content (EN)')
                 ->required(),
         ];
@@ -54,7 +56,7 @@ class ContentBrick extends DynamicBrick
         return Placeholder::make($this->data['handle'])
             ->label($label = $this->localized('label'))
             ->hiddenLabel($label === null)
-            ->content($this->localized('content'));
+            ->content($this->sanitizedContent());
     }
 
     public function infolist(): TextEntry
@@ -62,6 +64,13 @@ class ContentBrick extends DynamicBrick
         return TextEntry::make($this->data['handle'])
             ->label($label = $this->localized('label'))
             ->hiddenLabel($label === null)
-            ->state($this->localized('content'));
+            ->state($this->sanitizedContent());
+    }
+
+    protected function sanitizedContent(): HtmlString
+    {
+        return new HtmlString(
+            Str::of($this->localized('content'))->sanitizeHtml()
+        );
     }
 }
