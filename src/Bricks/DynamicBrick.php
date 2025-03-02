@@ -37,6 +37,7 @@ abstract class DynamicBrick
         ToggleBrick::class,
         ContentBrick::class,
         CustomFieldSetBrick::class,
+        FileUploadBrick::class,
     ];
 
     public static string $identifier;
