@@ -51,9 +51,9 @@ class FormPage extends Model
         return Step::make($this->name)->schema($this->formSchema($dependencies, $disableRequiredCheck));
     }
 
-    public function infolist(): Tab
+    public function infolist(string $prefix = ''): Tab
     {
-        return Tab::make($this->name)->schema($this->infolistSchema());
+        return Tab::make($this->name)->schema($this->infolistSchema($prefix));
     }
 
     /**
@@ -71,13 +71,14 @@ class FormPage extends Model
         )->flatten()->all();
     }
 
-    public function infolistSchema(): array
+    public function infolistSchema(string $prefix = ''): array
     {
         return collect($this->fields['content'])->map(
             fn ($content) => DynamicBrick::resolve(
                 $content['attrs']['identifier'],
                 $content['attrs']['values'],
-            )->infolist(),
+                prefix: $prefix,
+            )->infolist($prefix),
         )->flatten()->all();
     }
 

@@ -31,11 +31,15 @@ class CustomFieldSetBrick extends DynamicBrick
 
     public function form(): array
     {
-        return CustomFieldSet::find($this->data['dynamic_custom_field_set_id'])?->form() ?? FormGroup::make();
+        return CustomFieldSet::find($this->data['dynamic_custom_field_set_id'])
+            ?->form($this->dependencies, $this->disableRequiredCheck)
+            ?? [];
     }
 
     public function infolist(): array
     {
-        return CustomFieldSet::find($this->data['dynamic_custom_field_set_id'])?->infolist() ?? InfolistGroup::make();
+        return CustomFieldSet::find($this->data['dynamic_custom_field_set_id'])
+            ?->infolist($this->prefix)
+            ?? [];
     }
 }

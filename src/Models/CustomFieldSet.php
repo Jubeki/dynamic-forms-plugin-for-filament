@@ -42,7 +42,7 @@ class CustomFieldSet extends Model
     /**
      * @param  list<string>  $dependencies
      */
-    public function form(?array $dependencies = null): array
+    public function form(?array $dependencies = null, bool $disableRequiredCheck = false): array
     {
         $dependencies ??= $this->fieldsDependedOn();
 
@@ -51,16 +51,18 @@ class CustomFieldSet extends Model
                 $content['attrs']['identifier'],
                 $content['attrs']['values'],
                 $dependencies,
+                $disableRequiredCheck,
             )->form(),
         )->flatten()->all();
     }
 
-    public function infolist(): array
+    public function infolist(string $prefix = ''): array
     {
         return collect($this->fields['content'])->map(
             fn ($content) => DynamicBrick::resolve(
                 $content['attrs']['identifier'],
                 $content['attrs']['values'],
+                prefix: $prefix,
             )->infolist(),
         )->flatten()->all();
     }

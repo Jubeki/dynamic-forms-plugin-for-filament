@@ -6,6 +6,8 @@ use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Jubeki\Filament\DynamicForms\Models\FormBlueprint;
@@ -72,6 +74,9 @@ class FormBlueprintResource extends Resource
     {
         return $table->columns([
             TextColumn::make('name'),
+        ])->actions([
+            ReplicateAction::make(),
+            EditAction::make(),
         ]);
     }
 

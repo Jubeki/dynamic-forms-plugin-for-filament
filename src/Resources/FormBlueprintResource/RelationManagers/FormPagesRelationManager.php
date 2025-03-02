@@ -4,8 +4,11 @@ namespace Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\RelationM
 
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Jubeki\Filament\DynamicForms\Resources\FormPageResource;
 
 class FormPagesRelationManager extends RelationManager
@@ -16,8 +19,11 @@ class FormPagesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
+            ->reorderable('sort')
+            ->defaultSort(function(Builder $query) {
+                $query->orderBy('sort')->orderBy('id');
+            })
             ->columns([
-                TextColumn::make('id'),
                 TextColumn::make('name'),
             ])
             ->filters([
@@ -29,7 +35,9 @@ class FormPagesRelationManager extends RelationManager
                 ])),
             ])
             ->actions([
-                //
+                ReplicateAction::make(),
+                EditAction::make()
+                    ->url(fn ($record) => FormPageResource::getUrl('edit', [$record])),
             ])
             ->bulkActions([
                 //

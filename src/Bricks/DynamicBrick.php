@@ -68,11 +68,11 @@ abstract class DynamicBrick
             });
     }
 
-    public static function resolve(string $type, array $data, ?array $dependencies = null, bool $disableRequiredCheck = false): static
+    public static function resolve(string $type, array $data, ?array $dependencies = null, bool $disableRequiredCheck = false, string $prefix = ''): static
     {
         foreach (static::$bricks as $brick) {
             if ($brick::$identifier === $type) {
-                return $brick::build($data, $dependencies, $disableRequiredCheck);
+                return $brick::build($data, $dependencies, $disableRequiredCheck, $prefix);
             }
         }
 
@@ -82,9 +82,9 @@ abstract class DynamicBrick
     /**
      * @param  list<string>  $dependencies
      */
-    public static function build(array $data, ?array $dependencies = null, bool $disableRequiredCheck = false): static
+    public static function build(array $data, ?array $dependencies = null, bool $disableRequiredCheck = false, string $prefix = ''): static
     {
-        return new static($data, $dependencies ?? [], $disableRequiredCheck);
+        return new static($data, $dependencies ?? [], $disableRequiredCheck, $prefix);
     }
 
     public static function defaultSchema(array $schema = []): array
@@ -204,6 +204,7 @@ abstract class DynamicBrick
         protected array $data,
         protected array $dependencies = [],
         protected bool $disableRequiredCheck = false,
+        protected string $prefix = '',
     ) {}
 
     abstract public function form(): FormComponent|array;
@@ -218,7 +219,7 @@ abstract class DynamicBrick
      */
     protected function configureForForm(string $class): FormComponent
     {
-        return $class::make($this->data['handle'])
+        return $class::make($this->prefix.$this->data['handle'])
             ->label($this->localized('label'))
             ->helperText($this->localized('helperText'))
             ->hint($this->localized('hint'))
@@ -235,7 +236,7 @@ abstract class DynamicBrick
      */
     protected function configureForInfolist(string $class): InfolistComponent
     {
-        return $class::make($this->data['handle'])
+        return $class::make($this->prefix.$this->data['handle'])
             ->label($this->localized('label'))
             ->visible($this->visibleClosure())
             ->default('---');

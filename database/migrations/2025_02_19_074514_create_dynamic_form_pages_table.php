@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('dynamic_form_pages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('form_blueprint_id');
+            $table->unsignedInteger('sort')->nullable();
             $table->json('name');
             $table->json('fields');
             $table->timestamps();

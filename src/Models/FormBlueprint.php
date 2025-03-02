@@ -33,9 +33,9 @@ class FormBlueprint extends Model
         return Wizard::make($this->pages->map->form($dependencies, $disableRequiredCheck)->all());
     }
 
-    public function infolist(): Tabs
+    public function infolist(string $prefix = ''): Tabs
     {
-        return Tabs::make()->schema($this->pages->map->infolist()->all());
+        return Tabs::make()->schema($this->pages->map->infolist($prefix)->all());
     }
 
     public function fieldsDependedOn(): array
