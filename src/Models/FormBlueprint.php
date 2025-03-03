@@ -28,7 +28,8 @@ class FormBlueprint extends Model
 
     public function form(bool $disableRequiredCheck = false): Wizard
     {
-        $dependencies = $this->fieldsDependedOn();
+        // $dependencies = $this->fieldsDependedOn();
+        $dependencies = null;
 
         return Wizard::make($this->pages->map->form($dependencies, $disableRequiredCheck)->all());
     }
