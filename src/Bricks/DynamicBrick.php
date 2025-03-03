@@ -21,6 +21,7 @@ use Livewire\Component as Livewire;
 use Filament\Infolists\Components\Component as InfolistComponent;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Crypt;
@@ -225,7 +226,7 @@ abstract class DynamicBrick
             ->helperText($this->localized('helperText'))
             ->hint($this->localized('hint'))
             ->required(fn(Livewire $livewire) => ! ($livewire->disableRequiredCheck ?? false) &&$this->bool('required'))
-            ->visible($this->visibleClosure())
+            ->visible($this->visibleClosureForm())
             ->live(condition: in_array($this->data['handle'], $this->dependencies));
     }
 
@@ -239,11 +240,11 @@ abstract class DynamicBrick
     {
         return $class::make($this->prefix.$this->data['handle'])
             ->label($this->localized('label'))
-            ->visible($this->visibleClosure())
+            ->visible($this->visibleClosureInfolist())
             ->default('---');
     }
 
-    protected function visibleClosure(): Closure|bool
+    protected function visibleClosureForm(): Closure|bool
     {
         if ($this->data['visible'] === 'always') {
             return true;
@@ -255,9 +256,8 @@ abstract class DynamicBrick
 
         if ($this->data['visible'] === 'if_all') {
             return function (Get $get) {
-
                 foreach ($this->data['visible_conditions'] as $condition) {
-                    if ($this->evaluateCondition($condition, $get) === false) {
+                    if ($this->evaluateConditionForm($condition, $get) === false) {
                         return false;
                     }
                 }
@@ -271,7 +271,7 @@ abstract class DynamicBrick
             return function (Get $get) {
 
                 foreach ($this->data['visible_conditions'] as $condition) {
-                    if ($this->evaluateCondition($condition, $get) === true) {
+                    if ($this->evaluateConditionForm($condition, $get) === true) {
                         return true;
                     }
                 }
@@ -283,13 +283,76 @@ abstract class DynamicBrick
         return true;
     }
 
-    protected function evaluateCondition(array $condition, Get $get): bool
+    protected function evaluateConditionForm(array $condition, Get $get): bool
     {
         $field = $condition['field'];
         $operator = $condition['operator'];
         $value = $condition['value'];
 
         $fieldValue = $get($field);
+
+        return match ($operator) {
+            '==' => $fieldValue == $value,
+            '!=' => $fieldValue != $value,
+            '>' => $fieldValue > $value,
+            '<' => $fieldValue < $value,
+            '>=' => $fieldValue >= $value,
+            '<=' => $fieldValue <= $value,
+            'contains' => str_contains($fieldValue, $value),
+            'starts_with' => str_starts_with($fieldValue, $value),
+            'ends_with' => str_ends_with($fieldValue, $value),
+            'in' => in_array($fieldValue, explode(',', $value)),
+            'not_in' => ! in_array($fieldValue, explode(',', $value)),
+            default => false,
+        };
+    }
+
+    protected function visibleClosureInfolist(): Closure|bool
+    {
+        if ($this->data['visible'] === 'always') {
+            return true;
+        }
+
+        if ($this->data['visible'] === 'never') {
+            return false;
+        }
+
+        if ($this->data['visible'] === 'if_all') {
+            return function (Model $record) {
+                foreach ($this->data['visible_conditions'] as $condition) {
+                    if ($this->evaluateConditionInfolist($condition, $record) === false) {
+                        return false;
+                    }
+                }
+
+                return true;
+
+            };
+        }
+
+        if ($this->data['visible'] === 'if_any') {
+            return function (Model $record) {
+
+                foreach ($this->data['visible_conditions'] as $condition) {
+                    if ($this->evaluateConditionInfolist($condition, $record) === true) {
+                        return true;
+                    }
+                }
+
+                return false;
+            };
+        }
+
+        return true;
+    }
+
+    protected function evaluateConditionInfolist(array $condition, Model $record): bool
+    {
+        $field = $condition['field'];
+        $operator = $condition['operator'];
+        $value = $condition['value'];
+
+        $fieldValue = Arr::get($record->data, $field);
 
         return match ($operator) {
             '==' => $fieldValue == $value,
