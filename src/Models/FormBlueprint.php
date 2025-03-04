@@ -7,10 +7,14 @@ use Filament\Infolists\Components\Tabs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Jubeki\Filament\DynamicForms\Database\Factories\FormBlueprintFactory;
 
+#[UseFactory(FormBlueprintFactory::class)]
 class FormBlueprint extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasFactory;
 
     public $translatable = ['name'];
 

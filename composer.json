@@ -49,13 +49,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Jubeki\\Filament\\DynamicForms\\": "src/"
+            "Jubeki\\Filament\\DynamicForms\\": "src/",
+            "Jubeki\\Filament\\DynamicForms\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Jubeki\\Filament\\DynamicForms\\Tests\\": "tests/src",
-            "Jubeki\\Filament\\DynamicForms\\Tests\\Database\\Factories\\": "tests/database/factories/"
+            "Jubeki\\Filament\\DynamicForms\\Tests\\": "tests/src"
         }
     },
     "scripts": {
