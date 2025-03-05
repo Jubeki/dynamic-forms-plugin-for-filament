@@ -4,23 +4,17 @@ namespace Jubeki\Filament\DynamicForms\Resources;
 
 use Awcodes\Mason\Mason;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Request;
 use Jubeki\Filament\DynamicForms\Bricks\DynamicBrick;
 use Jubeki\Filament\DynamicForms\Models\CustomFieldSet;
-use Jubeki\Filament\DynamicForms\Models\FormPage;
 use Jubeki\Filament\DynamicForms\Resources\CustomFieldSetResource\Pages\CreateCustomFieldSet;
 use Jubeki\Filament\DynamicForms\Resources\CustomFieldSetResource\Pages\EditCustomFieldSet;
 use Jubeki\Filament\DynamicForms\Resources\CustomFieldSetResource\Pages\ListCustomFieldSets;
-use Jubeki\Filament\DynamicForms\Resources\FormPageResource\Pages\CreateFormPage;
-use Jubeki\Filament\DynamicForms\Resources\FormPageResource\Pages\EditFormPage;
-use Jubeki\Filament\DynamicForms\Resources\FormPageResource\Pages\ListFormPages;
 
 class CustomFieldSetResource extends Resource
 {

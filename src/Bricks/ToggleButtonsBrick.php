@@ -5,11 +5,9 @@ namespace Jubeki\Filament\DynamicForms\Bricks;
 use Awcodes\Mason\Brick;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
-use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 

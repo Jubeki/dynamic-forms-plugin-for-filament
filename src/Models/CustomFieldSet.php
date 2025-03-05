@@ -2,17 +2,10 @@
 
 namespace Jubeki\Filament\DynamicForms\Models;
 
-use Filament\Forms\Components\Wizard\Step;
-use Filament\Infolists\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 use Jubeki\Filament\DynamicForms\Bricks\DynamicBrick;
 use Spatie\Translatable\HasTranslations;
-use Filament\Forms\Components\Group as FormGroup;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\Group as InfolistGroup;
 
 class CustomFieldSet extends Model
 {

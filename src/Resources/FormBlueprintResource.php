@@ -6,14 +6,11 @@ use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
 use Jubeki\Filament\DynamicForms\Models\FormBlueprint;
-use Jubeki\Filament\DynamicForms\Models\FormPage;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\CreateFormBlueprint;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\EditFormBlueprint;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\ListFormBlueprints;
@@ -74,7 +71,7 @@ class FormBlueprintResource extends Resource
                 ])->columns(2),
 
                 ...$form->getRecord()->canBeUpdated() ? [] : [
-                    $form->getRecord()->form(prefix: 'preview.', asTabs: true)->disabled()
+                    $form->getRecord()->form(prefix: 'preview.', asTabs: true)->disabled(),
                 ],
 
             ]);
@@ -83,27 +80,27 @@ class FormBlueprintResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->columns([
-            TextColumn::make('name'),
-            TextColumn::make('version'),
-            TextColumn::make('status')
-                ->badge()
-                ->state(fn(FormBlueprint $record) => match (true) {
-                    $record->isArchived() => 'archived',
-                    $record->isPublished() => 'published',
-                    default => 'editing',
-                })
-                ->formatStateUsing(fn(string $state) => match ($state) {
-                    'published' => 'Veröffentlicht',
-                    'archived' => 'Archiviert',
-                    default => 'In Bearbeitung',
-                })
-                ->color(fn(string $state) => match ($state) {
-                    'published' => 'success',
-                    'archived' => 'danger',
-                    default => 'warning',
-                }),
-        ])->actions([
+            ->columns([
+                TextColumn::make('name'),
+                TextColumn::make('version'),
+                TextColumn::make('status')
+                    ->badge()
+                    ->state(fn (FormBlueprint $record) => match (true) {
+                        $record->isArchived() => 'archived',
+                        $record->isPublished() => 'published',
+                        default => 'editing',
+                    })
+                    ->formatStateUsing(fn (string $state) => match ($state) {
+                        'published' => 'Veröffentlicht',
+                        'archived' => 'Archiviert',
+                        default => 'In Bearbeitung',
+                    })
+                    ->color(fn (string $state) => match ($state) {
+                        'published' => 'success',
+                        'archived' => 'danger',
+                        default => 'warning',
+                    }),
+            ])->actions([
 
             ViewAction::make(),
 
@@ -124,12 +121,12 @@ class FormBlueprintResource extends Resource
                 ])
                 ->mutateRecordDataUsing(function (array $data): array {
 
-                    $data['handle'] = $data['handle'] . '-copy';
+                    $data['handle'] = $data['handle'].'-copy';
                     $data['name'] = [
-                        'de' => $data['name']['de'] . ' (Kopie)',
-                        'en' => $data['name']['en'] . ' (Copy)',
+                        'de' => $data['name']['de'].' (Kopie)',
+                        'en' => $data['name']['en'].' (Copy)',
                     ];
-             
+
                     return $data;
                 })
                 ->beforeReplicaSaved(function (FormBlueprint $replica): void {

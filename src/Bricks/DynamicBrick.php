@@ -17,14 +17,11 @@ use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
-use Livewire\Component as Livewire;
 use Filament\Infolists\Components\Component as InfolistComponent;
-use Filament\Infolists\Components\TextEntry;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Crypt;
+use Livewire\Component as Livewire;
 use LogicException;
 
 abstract class DynamicBrick
@@ -225,7 +222,7 @@ abstract class DynamicBrick
             ->label($this->localized('label'))
             ->helperText($this->localized('helperText'))
             ->hint($this->localized('hint'))
-            ->required(fn(Livewire $livewire) => ! ($livewire->disableRequiredCheck ?? false) &&$this->bool('required'))
+            ->required(fn (Livewire $livewire) => ! ($livewire->disableRequiredCheck ?? false) && $this->bool('required'))
             ->visible($this->visibleClosureForm())
             ->live(condition: in_array($this->data['handle'], $this->dependencies));
     }
@@ -389,7 +386,7 @@ abstract class DynamicBrick
         }
 
         return Arr::mapWithKeys($array, fn ($value) => [
-            $value['value'] => $value['label'][App::getLocale()]
+            $value['value'] => $value['label'][App::getLocale()],
         ]);
     }
 

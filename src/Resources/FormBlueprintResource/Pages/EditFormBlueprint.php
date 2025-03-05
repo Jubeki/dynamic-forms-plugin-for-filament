@@ -11,7 +11,6 @@ class EditFormBlueprint extends EditRecord
 {
     public static string $resource = FormBlueprintResource::class;
 
-
     /**
      * @return array<Action | ActionGroup>
      */
@@ -22,5 +21,4 @@ class EditFormBlueprint extends EditRecord
             PublishAction::make(),
         ];
     }
-
 }

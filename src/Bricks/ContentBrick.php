@@ -6,14 +6,10 @@ use Awcodes\Mason\Brick;
 use Filament\Forms\Components\Group as FormGroup;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\Group as InfolistGroup;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
-use Jubeki\Filament\DynamicForms\Models\CustomFieldSet;
 
 class ContentBrick extends DynamicBrick
 {

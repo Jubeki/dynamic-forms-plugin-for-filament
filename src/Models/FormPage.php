@@ -8,7 +8,6 @@ use Filament\Infolists\Components\Tabs\Tab as InfolistTab;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
 use Jubeki\Filament\DynamicForms\Bricks\DynamicBrick;
 use Spatie\Translatable\HasTranslations;
 

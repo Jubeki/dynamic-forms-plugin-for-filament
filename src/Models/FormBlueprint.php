@@ -5,17 +5,17 @@ namespace Jubeki\Filament\DynamicForms\Models;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Wizard;
 use Filament\Infolists\Components\Tabs as InfolistTabs;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Jubeki\Filament\DynamicForms\Database\Factories\FormBlueprintFactory;
+use Spatie\Translatable\HasTranslations;
 
 #[UseFactory(FormBlueprintFactory::class)]
 class FormBlueprint extends Model
 {
-    use HasTranslations, HasFactory;
+    use HasFactory, HasTranslations;
 
     public $translatable = ['name'];
 
@@ -36,7 +36,7 @@ class FormBlueprint extends Model
         // $dependencies = $this->fieldsDependedOn();
         $dependencies = null;
 
-        if($asTabs) {
+        if ($asTabs) {
             return Tabs::make()->schema(
                 $this->pages->map->form($dependencies, $disableRequiredCheck, $prefix, asTab: true)->all()
             );

@@ -15,7 +15,7 @@ use Jubeki\Filament\DynamicForms\Resources\FormPageResource;
 class FormPagesRelationManager extends RelationManager
 {
     protected static string $relationship = 'pages';
-    
+
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return $ownerRecord->canBeUpdated();
@@ -26,7 +26,7 @@ class FormPagesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->reorderable('sort')
-            ->defaultSort(function(Builder $query) {
+            ->defaultSort(function (Builder $query) {
                 $query->orderBy('sort')->orderBy('id');
             })
             ->columns([

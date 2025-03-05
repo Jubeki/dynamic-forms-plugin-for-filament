@@ -21,14 +21,14 @@ class CreateFormPage extends CreateRecord
 
     public function getTitle(): string
     {
-        return $this->blueprint->name . " - Neue Seite anlegen";
+        return $this->blueprint->name.' - Neue Seite anlegen';
     }
 
     protected function authorizeAccess(): void
     {
         parent::authorizeAccess();
 
-        if(! $this->blueprint->canBeUpdated()) {
+        if (! $this->blueprint->canBeUpdated()) {
             $this->redirect(FormBlueprintResource::getUrl('edit', [$this->blueprint]));
         }
     }

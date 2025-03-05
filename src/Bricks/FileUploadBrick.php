@@ -3,18 +3,15 @@
 namespace Jubeki\Filament\DynamicForms\Bricks;
 
 use Awcodes\Mason\Brick;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class FileUploadBrick extends DynamicBrick
 {
     public static string $identifier = 'file_upload_brick';
-    
+
     public static function make(): Brick
     {
         return static::brick()->label('File Upload');

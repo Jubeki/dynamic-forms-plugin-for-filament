@@ -14,14 +14,14 @@ class EditFormPage extends EditRecord
 
     public function getTitle(): string
     {
-        return $this->blueprint->name . " - Seite bearbeiten";
+        return $this->blueprint->name.' - Seite bearbeiten';
     }
 
     protected function authorizeAccess(): void
     {
         parent::authorizeAccess();
 
-        if(! $this->blueprint->canBeUpdated()) {
+        if (! $this->blueprint->canBeUpdated()) {
             $this->redirect(FormBlueprintResource::getUrl('edit', [$this->blueprint]));
         }
     }
