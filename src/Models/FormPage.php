@@ -2,8 +2,9 @@
 
 namespace Jubeki\Filament\DynamicForms\Models;
 
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Wizard\Step;
-use Filament\Infolists\Components\Tabs\Tab;
+use Filament\Infolists\Components\Tabs\Tab as InfolistTab;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
@@ -44,22 +45,23 @@ class FormPage extends Model
     /**
      * @param  list<string>  $dependencies
      */
-    public function form(?array $dependencies = null, bool $disableRequiredCheck = false): Step
+    public function form(?array $dependencies = null, bool $disableRequiredCheck = false, string $prefix = '', bool $asTab = false): Step|Tab
     {
         $dependencies ??= $this->fieldsDependedOn();
+        $component = $asTab ? Tab::class : Step::class;
 
-        return Step::make($this->name)->schema($this->formSchema($dependencies, $disableRequiredCheck));
+        return $component::make($this->name)->schema($this->formSchema($dependencies, $disableRequiredCheck, $prefix));
     }
 
-    public function infolist(string $prefix = ''): Tab
+    public function infolist(string $prefix = ''): InfolistTab
     {
-        return Tab::make($this->name)->schema($this->infolistSchema($prefix));
+        return InfolistTab::make($this->name)->schema($this->infolistSchema($prefix));
     }
 
     /**
      * @param  list<string>  $dependencies
      */
-    public function formSchema(array $dependencies, bool $disableRequiredCheck = false): array
+    public function formSchema(array $dependencies, bool $disableRequiredCheck = false, string $prefix = ''): array
     {
         return collect($this->fields['content'])->map(
             fn ($content) => DynamicBrick::resolve(
@@ -67,6 +69,7 @@ class FormPage extends Model
                 $content['attrs']['values'],
                 $dependencies,
                 $disableRequiredCheck,
+                $prefix,
             )->form(),
         )->flatten()->all();
     }

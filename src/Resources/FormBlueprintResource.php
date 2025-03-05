@@ -8,13 +8,17 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Jubeki\Filament\DynamicForms\Models\FormBlueprint;
+use Jubeki\Filament\DynamicForms\Models\FormPage;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\CreateFormBlueprint;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\EditFormBlueprint;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\ListFormBlueprints;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\RelationManagers\FormPagesRelationManager;
+use Livewire\Component as Livewire;
 
 class FormBlueprintResource extends Resource
 {
@@ -47,11 +51,13 @@ class FormBlueprintResource extends Resource
 
                     TextInput::make('handle')
                         ->label('Handle')
-                        ->required(),
+                        ->required()
+                        ->disabled(fn (Livewire $livewire) => ! $livewire instanceof CreateFormBlueprint),
 
                     TextInput::make('version')
                         ->label('Version')
-                        ->required(),
+                        ->default('1')
+                        ->disabled(),
 
                 ])->columns(2),
 
@@ -67,16 +73,75 @@ class FormBlueprintResource extends Resource
 
                 ])->columns(2),
 
+                ...$form->getRecord()->canBeUpdated() ? [] : [
+                    $form->getRecord()->form(prefix: 'preview.', asTabs: true)->disabled()
+                ],
+
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table->columns([
+        return $table
+        ->columns([
             TextColumn::make('name'),
+            TextColumn::make('version'),
+            TextColumn::make('status')
+                ->badge()
+                ->state(fn(FormBlueprint $record) => match (true) {
+                    $record->isArchived() => 'archived',
+                    $record->isPublished() => 'published',
+                    default => 'editing',
+                })
+                ->formatStateUsing(fn(string $state) => match ($state) {
+                    'published' => 'Veröffentlicht',
+                    'archived' => 'Archiviert',
+                    default => 'In Bearbeitung',
+                })
+                ->color(fn(string $state) => match ($state) {
+                    'published' => 'success',
+                    'archived' => 'danger',
+                    default => 'warning',
+                }),
         ])->actions([
-            ReplicateAction::make(),
-            EditAction::make(),
+
+            ViewAction::make(),
+
+            ReplicateAction::make()
+                ->form([
+                    TextInput::make('handle')
+                        ->label('Neues Handle')
+                        ->required()
+                        ->unique(FormBlueprint::class, 'handle'),
+
+                    TextInput::make('name.de')
+                        ->label('Neuer Name (DE)')
+                        ->required(),
+
+                    TextInput::make('name.en')
+                        ->label('Neuer Name (EN)')
+                        ->required(),
+                ])
+                ->mutateRecordDataUsing(function (array $data): array {
+
+                    $data['handle'] = $data['handle'] . '-copy';
+                    $data['name'] = [
+                        'de' => $data['name']['de'] . ' (Kopie)',
+                        'en' => $data['name']['en'] . ' (Copy)',
+                    ];
+             
+                    return $data;
+                })
+                ->beforeReplicaSaved(function (FormBlueprint $replica): void {
+                    $replica->version = 1;
+                    $replica->published_at = null;
+                    $replica->archived_at = null;
+                })
+                ->after(function (FormBlueprint $replica, FormBlueprint $record): void {
+                    $replica->pages()->createMany(
+                        $record->pages->map->replicate()->toArray()
+                    );
+                }),
         ]);
     }
 

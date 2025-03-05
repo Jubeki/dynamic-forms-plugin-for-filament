@@ -45,15 +45,6 @@ class FormPageResource extends Resource
             ->columns(1)
             ->schema([
 
-                Select::make('form_blueprint_id')
-                    ->label('Form Blueprint')
-                    ->relationship('blueprint', 'name')
-                    ->preload()
-                    ->required()
-                    ->default(function() {
-                        return Request::query('blueprint');
-                    }),
-
                 Group::make([
 
                     TextInput::make('name.de')

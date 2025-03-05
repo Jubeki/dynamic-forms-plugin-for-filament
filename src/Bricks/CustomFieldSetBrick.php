@@ -32,7 +32,7 @@ class CustomFieldSetBrick extends DynamicBrick
     public function form(): array
     {
         return CustomFieldSet::find($this->data['dynamic_custom_field_set_id'])
-            ?->form($this->dependencies, $this->disableRequiredCheck)
+            ?->form($this->dependencies, $this->disableRequiredCheck, $this->prefix)
             ?? [];
     }
 

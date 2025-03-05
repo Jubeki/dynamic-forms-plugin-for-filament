@@ -285,7 +285,7 @@ abstract class DynamicBrick
 
     protected function evaluateConditionForm(array $condition, Get $get): bool
     {
-        $field = $condition['field'];
+        $field = $this->prefix.$condition['field'];
         $operator = $condition['operator'];
         $value = $condition['value'];
 
@@ -348,11 +348,11 @@ abstract class DynamicBrick
 
     protected function evaluateConditionInfolist(array $condition, Model $record): bool
     {
-        $field = $condition['field'];
+        $field = $this->prefix.$condition['field'];
         $operator = $condition['operator'];
         $value = $condition['value'];
 
-        $fieldValue = Arr::get($record->data, $field);
+        $fieldValue = Arr::get($record, $field);
 
         return match ($operator) {
             '==' => $fieldValue == $value,

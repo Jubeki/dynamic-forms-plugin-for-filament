@@ -9,11 +9,17 @@ use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Jubeki\Filament\DynamicForms\Resources\FormPageResource;
 
 class FormPagesRelationManager extends RelationManager
 {
     protected static string $relationship = 'pages';
+    
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return $ownerRecord->canBeUpdated();
+    }
 
     public function table(Table $table): Table
     {

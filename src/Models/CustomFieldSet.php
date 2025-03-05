@@ -42,7 +42,7 @@ class CustomFieldSet extends Model
     /**
      * @param  list<string>  $dependencies
      */
-    public function form(?array $dependencies = null, bool $disableRequiredCheck = false): array
+    public function form(?array $dependencies = null, bool $disableRequiredCheck = false, string $prefix = ''): array
     {
         $dependencies ??= $this->fieldsDependedOn();
 
@@ -52,6 +52,7 @@ class CustomFieldSet extends Model
                 $content['attrs']['values'],
                 $dependencies,
                 $disableRequiredCheck,
+                $prefix,
             )->form(),
         )->flatten()->all();
     }

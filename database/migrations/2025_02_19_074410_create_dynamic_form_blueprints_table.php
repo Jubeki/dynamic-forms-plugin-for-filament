@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('handle');
             $table->unsignedInteger('version');
             $table->json('name');
+            $table->timestamp('published_at')->nullable();
+            $table->timestamp('archived_at')->nullable();
             $table->timestamps();
 
             $table->unique(['handle', 'version']);
