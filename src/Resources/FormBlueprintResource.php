@@ -70,7 +70,7 @@ class FormBlueprintResource extends Resource
 
                 ])->columns(2),
 
-                ...$form->getRecord()->canBeUpdated() ? [] : [
+                ...$form->getRecord()?->canBeUpdated() ?? true ? [] : [
                     $form->getRecord()->form(prefix: 'preview.', asTabs: true)->disabled(),
                 ],
 

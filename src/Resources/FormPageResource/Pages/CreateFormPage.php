@@ -41,7 +41,11 @@ class CreateFormPage extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-        $data['blueprint_id'] = $this->blueprintId;
+        $data['form_blueprint_id'] = $this->blueprintId;
+        $data['fields'] ??= [
+            'type' => 'doc',
+            'content' => [],
+        ];
 
         return static::getModel()::create($data);
     }
