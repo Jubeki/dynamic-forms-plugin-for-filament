@@ -51,10 +51,10 @@ class FileUploadBrick extends DynamicBrick
         static::$resolveDirectory = $callback;
     }
 
-    public static function resolveDirectory(): string
+    public static function resolveDirectory(): Closure|string
     {
         if(static::$resolveDirectory) {
-            return call_user_func(static::$resolveDirectory);
+            return static::$resolveDirectory;
         }
 
         return 'documents/'.Auth::id();
