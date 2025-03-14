@@ -27,7 +27,6 @@ class DynamicFormsPlugin implements Plugin
             ->resources([
                 FormBlueprintResource::class,
                 FormPageResource::class,
-                CustomFieldSetResource::class,
             ])
             ->assets([
                 Css::make('dynamic-forms', __DIR__.'/../resources/dist/plugin.css'),

@@ -34,7 +34,6 @@ abstract class DynamicBrick
         CheckboxBrick::class,
         ToggleBrick::class,
         ContentBrick::class,
-        CustomFieldSetBrick::class,
         FileUploadBrick::class,
     ];
 
