@@ -10,6 +10,7 @@ use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Jubeki\Filament\DynamicForms\Events\DuplicatedBlueprint;
 use Jubeki\Filament\DynamicForms\Models\FormBlueprint;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\CreateFormBlueprint;
 use Jubeki\Filament\DynamicForms\Resources\FormBlueprintResource\Pages\EditFormBlueprint;
@@ -138,6 +139,8 @@ class FormBlueprintResource extends Resource
                     $replica->pages()->createMany(
                         $record->pages->map->replicate()->toArray()
                     );
+
+                    event(new DuplicatedBlueprint($record, $replica));
                 }),
         ]);
     }
