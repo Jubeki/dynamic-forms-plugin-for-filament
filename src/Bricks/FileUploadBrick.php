@@ -3,6 +3,7 @@
 namespace Jubeki\Filament\DynamicForms\Bricks;
 
 use Awcodes\Mason\Brick;
+use Closure;
 use Filament\Forms\Components\FileUpload;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 class FileUploadBrick extends DynamicBrick
 {
     public static string $identifier = 'file_upload_brick';
+
+    protected static ?Closure $resolveDirectory = null;
 
     public static function make(): Brick
     {
@@ -29,7 +32,7 @@ class FileUploadBrick extends DynamicBrick
             ->maxFiles(1)
             ->maxSize(1024)
             ->disk('local')
-            ->directory('documents/'.Auth::id())
+            ->directory(static::resolveDirectory())
             ->rule('extensions:pdf,jpg,jpeg,png')
             ->acceptedFileTypes(['application/pdf', 'image/jpg', 'image/jpeg', 'image/png']);
     }
@@ -41,5 +44,19 @@ class FileUploadBrick extends DynamicBrick
                 TextEntry::make('file_name')->label('Datei')->default('---'),
             ])
             ->url(fn ($state) => $state[0]['file'] === null ? null : ('/'.$state[0]['file']), shouldOpenInNewTab: true);
+    }
+
+    public static function resolveDirectoryUsing(Closure $callback): void
+    {
+        static::$resolveDirectory = $callback;
+    }
+
+    public static function resolveDirectory(): string
+    {
+        if(static::$resolveDirectory) {
+            return call_user_func(static::$resolveDirectory);
+        }
+
+        return 'documents/'.Auth::id();
     }
 }
