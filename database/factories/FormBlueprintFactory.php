@@ -15,8 +15,8 @@ class FormBlueprintFactory extends Factory
             'handle' => fake()->slug(),
             'version' => 1,
             'name' => [
-                'de' => fake()->words(3),
-                'en' => fake()->words(3),
+                'de' => fake()->sentence(),
+                'en' => fake()->sentence(),
             ],
         ];
     }
