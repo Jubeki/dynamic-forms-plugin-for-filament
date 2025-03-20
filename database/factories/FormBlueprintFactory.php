@@ -12,7 +12,7 @@ class FormBlueprintFactory extends Factory
     public function definition()
     {
         return [
-            'type' => fake()->slug(),
+            'handle' => fake()->slug(),
             'version' => 1,
             'name' => [
                 'de' => fake()->words(3),
